@@ -29,6 +29,7 @@ Look at the `sample` app for more.
 - Forget about messy callbacks;
 - Easy testing;
 - All what RX provides about transformation, filter, chaining...
+
 <!--
 ## Setup
 
