@@ -29,7 +29,7 @@ Look at the `sample` app for more.
 - Forget about messy callbacks;
 - Easy testing;
 - All what RX provides about transformation, filter, chaining...
-
+<!--
 ## Setup
 
 In your build.gradle :
@@ -39,3 +39,4 @@ dependencies {
     compile 'com.cesarferreira.rxfacebook:rxfacebook:0.1.0@aar'
 }
 ```
+-->
