@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.cesarferreira.rxfacebook.library.data.FacebookUser;
 import com.cesarferreira.rxfacebook.library.utils.Utils;
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.google.gson.Gson;
@@ -21,12 +22,13 @@ public class RxFacebook {
 
     private static RxFacebook sSingleton;
     private AccessToken mAccessToken;
+    private AccessTokenTracker mAccessTokenTracker;
 
     public static RxFacebook getInstance(@NotNull AccessToken accessToken) {
         if (sSingleton == null) {
             sSingleton = new RxFacebook();
-            sSingleton.mAccessToken = accessToken;
         }
+        sSingleton.mAccessToken = accessToken;
         return sSingleton;
     }
 
@@ -40,6 +42,27 @@ public class RxFacebook {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<AccessToken> startAccessTokenTracking(){
+        return Observable.create(subscriber -> {
+            if(mAccessTokenTracker==null){
+                mAccessTokenTracker = new AccessTokenTracker() {
+                    @Override
+                    protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                        subscriber.onNext(currentAccessToken);
+                    }
+                };
+            }
+            if(!mAccessTokenTracker.isTracking()){
+                mAccessTokenTracker.startTracking();
+            }
+        });
+    }
+
+    public void stopAccessTokenTracking(){
+        if(mAccessTokenTracker!=null && mAccessTokenTracker.isTracking()){
+            mAccessTokenTracker.stopTracking();
+        }
+    }
 
     private FacebookUser friendsList() {
         return graphRequest("user_friends");
